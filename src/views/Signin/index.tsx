@@ -1,8 +1,9 @@
 // pages/signup.tsx
 
-import React from 'react';
-import styled from 'styled-components';
-import { useForm, Controller } from 'react-hook-form';
+import React from "react";
+import styled from "styled-components";
+import { useForm, Controller } from "react-hook-form";
+import { usePostSiginMutation } from "services/NextWeb/SignupApi";
 
 type FieldType = {
   username?: string;
@@ -17,84 +18,99 @@ const SignupPage: React.FC = () => {
     control,
     handleSubmit,
     getValues,
+    reset,
     formState: { errors },
   } = useForm<FieldType>({
-    defaultValues: { role: 'customer' },
+    defaultValues: { role: "customer" },
   });
 
-  const onSubmit = (data: FieldType) => {
-    console.log('Form submitted successfully with:', data);
+  const [postSignin] = usePostSiginMutation();
+
+  const onSubmit = async (data: FieldType) => {
+    console.log("Form submitted successfully with:", data);
     // Add logic here to handle user registration, e.g., API call
     // Redirect based on the selected role
-    if (data.role === 'admin') {
-      console.log('Redirecting to admin dashboard...');
-    } else if (data.role === 'seller') {
-      console.log('Redirecting to seller dashboard...');
+    const payLoad = {
+      role: data.role,
+      username: data.username,
+      email: data.email,
+      password: data.password,
+    };
+
+    const response = await postSignin(payLoad);
+    if (response) {
+      reset();
+    }
+    console.log("response", response);
+    if (data.role === "admin") {
+      console.log("Redirecting to admin dashboard...");
+    } else if (data.role === "seller") {
+      console.log("Redirecting to seller dashboard...");
     } else {
-      console.log('Redirecting to customer dashboard...');
+      console.log("Redirecting to customer dashboard...");
     }
   };
 
   const onError = (errors: unknown) => {
-    console.log('Form submission failed with:', errors);
+    console.log("Form submission failed with:", errors);
   };
 
   return (
     <SignupWrapper>
       <SignupForm onSubmit={handleSubmit(onSubmit, onError)}>
         <FormField>
-          <Label htmlFor='username'>Username</Label>
+          <Label htmlFor="username">Username</Label>
           <Controller
-            name='username'
+            name="username"
             control={control}
-            rules={{ required: 'Please input your username!' }}
+            rules={{ required: "Please input your username!" }}
             render={({ field }) => <StyledInput {...field} />}
           />
           {errors.username && <Error>{errors.username.message}</Error>}
         </FormField>
 
         <FormField>
-          <Label htmlFor='email'>Email</Label>
+          <Label htmlFor="email">Email</Label>
           <Controller
-            name='email'
+            name="email"
             control={control}
             rules={{
-              required: 'Please input your email!',
+              required: "Please input your email!",
               pattern: /^[^@ ]+@[^@ ]+\.[^@ ]+$/,
             }}
-            render={({ field }) => <StyledInput type='email' {...field} />}
+            render={({ field }) => <StyledInput type="email" {...field} />}
           />
           {errors.email && <Error>{errors.email.message}</Error>}
         </FormField>
 
         <FormField>
-          <Label htmlFor='password'>Password</Label>
+          <Label htmlFor="password">Password</Label>
           <Controller
-            name='password'
+            name="password"
             control={control}
             rules={{
-              required: 'Please input your password!',
+              required: "Please input your password!",
               minLength: {
                 value: 6,
-                message: 'Password should be at least 6 characters',
+                message: "Password should be at least 6 characters",
               },
             }}
-            render={({ field }) => <StyledInput type='password' {...field} />}
+            render={({ field }) => <StyledInput type="password" {...field} />}
           />
           {errors.password && <Error>{errors.password.message}</Error>}
         </FormField>
 
         <FormField>
-          <Label htmlFor='confirmPassword'>Confirm Password</Label>
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
           <Controller
-            name='confirmPassword'
+            name="confirmPassword"
             control={control}
             rules={{
-              required: 'Please confirm your password!',
+              required: "Please confirm your password!",
               validate: (value) =>
-                value === getValues('password') || 'Passwords do not match',
+                value === getValues("password") || "Passwords do not match",
             }}
-            render={({ field }) => <StyledInput type='password' {...field} />}
+            render={({ field }) => <StyledInput type="password" {...field} />}
           />
           {errors.confirmPassword && (
             <Error>{errors.confirmPassword.message}</Error>
@@ -102,22 +118,22 @@ const SignupPage: React.FC = () => {
         </FormField>
 
         <FormField>
-          <Label htmlFor='role'>Role</Label>
+          <Label htmlFor="role">Role</Label>
           <Controller
-            name='role'
+            name="role"
             control={control}
             render={({ field }) => (
               <StyledSelect {...field}>
-                <option value='customer'>Customer</option>
-                <option value='seller'>Seller</option>
-                <option value='admin'>Admin</option>
+                <option value="customer">Customer</option>
+                <option value="seller">Seller</option>
+                <option value="admin">Admin</option>
               </StyledSelect>
             )}
           />
         </FormField>
 
         <ButtonWrapper>
-          <StyledButton type='submit'>Sign Up</StyledButton>
+          <StyledButton type="submit">Sign Up</StyledButton>
         </ButtonWrapper>
       </SignupForm>
     </SignupWrapper>
