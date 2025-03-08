@@ -47,4 +47,4 @@ userSchema.methods.isPasswordMatch = function (password: string) {
 // };
 
 // export default mongoose.model("User", userSchema);
-export const User = mongoose.models.users || mongoose.model("User", userSchema);
+export const User = mongoose.models.User || mongoose.model("User", userSchema);
