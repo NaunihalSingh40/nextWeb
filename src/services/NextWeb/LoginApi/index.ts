@@ -1,10 +1,10 @@
 import { NextWebApi } from "services/NextWeb";
 
-export const signinApi = NextWebApi.injectEndpoints({
+export const loginApi = NextWebApi.injectEndpoints({
   endpoints: (builder) => ({
-    postSigin: builder.mutation({
+    postLogin: builder.mutation({
       query: (body) => ({
-        url: "user",
+        url: "login",
         method: "POST",
         body,
       }),
@@ -13,4 +13,4 @@ export const signinApi = NextWebApi.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { usePostSiginMutation } = signinApi;
+export const { usePostLoginMutation } = loginApi;

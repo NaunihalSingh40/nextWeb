@@ -1,9 +1,7 @@
 import { connectDb } from "helper/dB";
 import { User } from "models/user";
 
-connectDb();
-
-interface UserRequestBody {
+export interface UserRequestBody {
   username: string;
   email: string;
   password: string;
@@ -11,6 +9,8 @@ interface UserRequestBody {
 }
 
 export const POST = async (request: Request): Promise<Response> => {
+  await connectDb();
+
   try {
     const { username, email, password, role }: UserRequestBody =
       await request.json();
