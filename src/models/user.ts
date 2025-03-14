@@ -26,6 +26,12 @@ const userSchema = new Schema({
     enum: ["customer", "seller", "admin"],
     default: "customer",
   },
+  accessToken: {
+    type: String,
+  },
+  refreshToken: {
+    type: String,
+  },
 });
 
 userSchema.pre("save", async function (next) {

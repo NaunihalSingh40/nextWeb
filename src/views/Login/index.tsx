@@ -1,74 +1,67 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useForm, Controller } from 'react-hook-form';
+import React from "react";
+import styled from "styled-components";
+import { useForm, Controller } from "react-hook-form";
+import { usePostLoginMutation } from "services/NextWeb/LoginApi";
 
 type FieldType = {
-  username?: string;
+  email?: string;
   password?: string;
-  remember?: boolean;
 };
 
 const LoginPage: React.FC = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FieldType>({
-    defaultValues: { remember: true },
+    defaultValues: {},
   });
 
-  const onSubmit = (data: FieldType) => {
-    console.log('Success:', data);
+  const [postLogin] = usePostLoginMutation();
+
+  const onSubmit = async (data: FieldType) => {
+    console.log("Success:", data);
+    const response = await postLogin(data);
+    console.log(response);
+    
+    if (response.data.status == 200) {
+      console.log('hereee');
+      
+      reset();
+    }
   };
 
   const onError = (errors: unknown) => {
-    console.log('Failed:', errors);
+    console.log("Failed:", errors);
   };
 
   return (
     <LoginWrapper>
       <LoginForm onSubmit={handleSubmit(onSubmit, onError)}>
         <FormField>
-          <Label htmlFor='username'>Username</Label>
+          <Label htmlFor="username">Username</Label>
           <Controller
-            name='username'
+            name="email"
             control={control}
-            rules={{ required: 'Please input your username!' }}
+            rules={{ required: "Please input your email!" }}
             render={({ field }) => <StyledInput {...field} />}
           />
-          {errors.username && <Error>{errors.username.message}</Error>}
+          {errors.email && <Error>{errors.email.message}</Error>}
         </FormField>
 
         <FormField>
-          <Label htmlFor='password'>Password</Label>
+          <Label htmlFor="password">Password</Label>
           <Controller
-            name='password'
+            name="password"
             control={control}
-            rules={{ required: 'Please input your password!' }}
-            render={({ field }) => <StyledInput type='password' {...field} />}
+            rules={{ required: "Please input your password!" }}
+            render={({ field }) => <StyledInput type="password" {...field} />}
           />
           {errors.password && <Error>{errors.password.message}</Error>}
         </FormField>
-
-        <FormField>
-          <Controller
-            name='remember'
-            control={control}
-            render={({ field }) => (
-              <StyledCheckboxWrapper>
-                <StyledCheckbox
-                  {...field}
-                  checked={field.value}
-                  value={undefined}
-                />
-                <StyledCheckboxLabel>Remember me</StyledCheckboxLabel>
-              </StyledCheckboxWrapper>
-            )}
-          />
-        </FormField>
-
         <ButtonWrapper>
-          <StyledButton type='submit'>Submit</StyledButton>
+          <StyledButton type="submit">Submit</StyledButton>
         </ButtonWrapper>
       </LoginForm>
     </LoginWrapper>
@@ -115,19 +108,6 @@ const StyledInput = styled.input`
   border-radius: 4px;
   box-sizing: border-box;
   margin-top: 8px;
-`;
-
-const StyledCheckboxWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const StyledCheckbox = styled.input`
-  margin-right: 8px;
-`;
-
-const StyledCheckboxLabel = styled.label`
-  font-size: 14px;
 `;
 
 const ButtonWrapper = styled.div`
