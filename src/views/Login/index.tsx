@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useForm, Controller } from "react-hook-form";
 import { usePostLoginMutation } from "services/NextWeb/LoginApi";
+import { useRouter } from "next/navigation";
 
 type FieldType = {
   email?: string;
@@ -9,13 +10,17 @@ type FieldType = {
 };
 
 const LoginPage: React.FC = () => {
+  const router = useRouter();
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<FieldType>({
-    defaultValues: {},
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const [postLogin] = usePostLoginMutation();
@@ -24,10 +29,10 @@ const LoginPage: React.FC = () => {
     console.log("Success:", data);
     const response = await postLogin(data);
     console.log(response);
-    
+
     if (response.data.status == 200) {
-      console.log('hereee');
-      
+      console.log("hereee");
+      router.push("/dashboard");
       reset();
     }
   };
