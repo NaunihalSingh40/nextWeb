@@ -1,4 +1,4 @@
-const resumeData = {
+export const resumeData = {
   name: "Naunihal Singh",
   title: "IT Engineering Student",
   location: "Kharar, Punjab, India",
@@ -106,4 +106,3 @@ const resumeData = {
   ],
 };
 
-export default resumeData;

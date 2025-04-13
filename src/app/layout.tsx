@@ -1,28 +1,22 @@
-"use client"
-// import { Geist, Geist_Mono } from "next/font/google";
+// app/layout.tsx
 import "./globals.css";
-import { Provider } from "react-redux";
-import store from "store";
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
+import Providers from "providers";
 
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
+export const metadata = {
+  title: "My App",
+  description: "E-commerce App",
+};
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <Provider store={store}>
-      <html lang="en">
-        <body>{children}</body>
-      </html>
-    </Provider>
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
   );
 }
