@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import resumeData from "app/data";
+import { resumeData } from "app/data";
 import { motion } from "framer-motion";
 
 const Section = styled(motion.section)`
