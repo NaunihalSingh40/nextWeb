@@ -1,14 +1,47 @@
 "use client";
-import { itemData } from "app/data";
 import Image from "next/image";
 import styled from "styled-components";
 import Layout from "views/Layout";
+import { useDispatch } from "react-redux";
+import { addToCart } from "slices/cartSlice";
+import { useGetProductQuery } from "services/NextWeb/GetProductsApi"; // <-- update this path if needed
+
+interface Rating {
+  rate: number;
+  count: number;
+}
+
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  category: string;
+  image: string;
+  rating: Rating;
+}
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  const { data: products, isLoading, isError } = useGetProductQuery(null);
+
+  if (isLoading)
+    return (
+      <Layout>
+        <p>Loading products...</p>
+      </Layout>
+    );
+  if (isError)
+    return (
+      <Layout>
+        <p>Failed to load products.</p>
+      </Layout>
+    );
+
   return (
     <Layout>
       <Grid>
-        {itemData.map((item) => (
+        {products?.map((item: Product) => (
           <ProductWrapper key={item.id}>
             <Content>
               <Image
@@ -20,7 +53,7 @@ const Dashboard = () => {
               />
               <ProductTitle>{item.title}</ProductTitle>
               <Rating>
-                ⭐ {item.rating.rate} ({item.rating.count})
+                ⭐ {item.rating?.rate ?? "N/A"} ({item.rating?.count ?? 0})
               </Rating>
               <Price>${item.price}</Price>
               <ButtonGroup>
@@ -28,7 +61,11 @@ const Dashboard = () => {
                   Buy Now
                 </BuyNowBtn>
                 <AddToCartBtn
-                  onClick={() => alert(`Added ${item.title} to cart`)}
+                  onClick={() =>
+                    dispatch(
+                      addToCart({ ...item, id: item.id.toString(), name: item.title })
+                    )
+                  }
                 >
                   Add to Cart
                 </AddToCartBtn>

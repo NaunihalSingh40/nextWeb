@@ -1,7 +1,8 @@
 "use client";
 import styled from "styled-components";
 import { ShoppingCart } from "lucide-react";
-import { useEffect } from "react";
+import type { RootState } from "store";
+import { useSelector } from "react-redux";
 
 const Nav = styled.nav`
   background: ${({ theme }) => theme.card || "#fff"};
@@ -19,37 +20,34 @@ const Logo = styled.h1`
 `;
 
 const Cart = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
   cursor: pointer;
 `;
 
+const Badge = styled.span`
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background-color: #ff4d4d;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+`;
+
 export default function Navbar() {
-  useEffect(() => {
-    let prevScrollpos = window.pageYOffset;
-    window.onscroll = function () {
-      const currentScrollPos = window.pageYOffset;
-      const navbar = document.getElementById("navbar");
-      if (prevScrollpos > currentScrollPos) {
-        if (navbar) {
-          navbar.style.top = "0px";
-        }
-      } else {
-        if (navbar) {
-          navbar.style.top = "-50px";
-        }
-      }
-      prevScrollpos = currentScrollPos;
-    };
-  });
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems);
+  const total = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <Nav id="navbar">
       <Logo>ShopSmart</Logo>
       <Cart>
         <ShoppingCart size={24} />
-        <span>Cart (0)</span>
+        {total > 0 && <Badge>{total}</Badge>}
       </Cart>
     </Nav>
   );
