@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import resumeData from "app/data";
-import { motion } from "framer-motion";
+import { resumeData } from "app/data";
 
-const Section = styled(motion.section)`
+const Section = styled.div`
   padding: 4rem 2rem;
 `;
 
