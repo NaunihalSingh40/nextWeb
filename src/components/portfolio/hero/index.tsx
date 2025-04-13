@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import resumeData from "app/data";
-import { motion } from "framer-motion";
+import { resumeData } from "app/data";
 
-const HeroSection = styled(motion.section)`
+const HeroSection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
