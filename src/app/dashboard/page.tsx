@@ -5,6 +5,8 @@ import Layout from "views/Layout";
 import { useDispatch } from "react-redux";
 import { addToCart } from "slices/cartSlice";
 import { useGetProductQuery } from "services/NextWeb/GetProductsApi"; // <-- update this path if needed
+import { useAddCartItemMutation } from "services/NextWeb/GetCartApi";
+import { getUserFromToken } from "helper";
 
 interface Rating {
   rate: number;
@@ -24,6 +26,7 @@ interface Product {
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { data: products, isLoading, isError } = useGetProductQuery(null);
+  const [addCartItem] = useAddCartItemMutation();
 
   if (isLoading)
     return (
@@ -61,11 +64,23 @@ const Dashboard = () => {
                   Buy Now
                 </BuyNowBtn>
                 <AddToCartBtn
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
-                      addToCart({ ...item, id: item.id.toString(), name: item.title })
-                    )
-                  }
+                      addToCart({
+                        ...item,
+                        id: item.id.toString(),
+                        name: item.title,
+                      })
+                    );
+                    addCartItem({
+                      userId: getUserFromToken()?.id,
+                      productId: item.id.toString(),
+                      name: item.title,
+                      price: item.price,
+                      quantity: 1,
+                      image: item.image,
+                    });
+                  }}
                 >
                   Add to Cart
                 </AddToCartBtn>

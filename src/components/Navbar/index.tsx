@@ -1,8 +1,8 @@
 "use client";
 import styled from "styled-components";
 import { ShoppingCart } from "lucide-react";
-import type { RootState } from "store";
 import { useSelector } from "react-redux";
+import { selectDistinctItemCount } from "slices/cartSlice";
 
 const Nav = styled.nav`
   background: ${({ theme }) => theme.card || "#fff"};
@@ -39,15 +39,14 @@ const Badge = styled.span`
 `;
 
 export default function Navbar() {
-  const cartItems = useSelector((state: RootState) => state.cart.cartItems);
-  const total = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const distinctItemCount = useSelector(selectDistinctItemCount);
 
   return (
     <Nav id="navbar">
       <Logo>ShopSmart</Logo>
       <Cart>
         <ShoppingCart size={24} />
-        {total > 0 && <Badge>{total}</Badge>}
+        {distinctItemCount > 0 && <Badge>{distinctItemCount}</Badge>}
       </Cart>
     </Nav>
   );

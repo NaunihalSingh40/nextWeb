@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { resumeData } from "app/data";
+import { resumeData } from "data";
 
 const HeroSection = styled.div`
   display: flex;

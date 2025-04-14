@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-// slices/cartSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartItem {
@@ -49,6 +48,11 @@ const cartSlice = createSlice({
   },
 });
 
+// ✅ Selector to get total count of distinct products
+export const selectDistinctItemCount = (state: { cart: CartState }) =>
+  state.cart.cartItems.length;
+
 export const { addToCart, removeFromCart, decreaseQuantity, clearCart } =
   cartSlice.actions;
+
 export default cartSlice.reducer;
