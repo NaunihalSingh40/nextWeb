@@ -1,21 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getUserIdFromToken } from "helper";
 import { connectDb } from "helper/dB";
 import { CartItem } from "models/cart";
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-
-export const getUserIdFromToken = (req: NextRequest) => {
-  const authHeader = req.headers.get("authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
-
-  const token = authHeader.split(" ")[1];
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    return (decoded as any).id;
-  } catch {
-    return null;
-  }
-};
 
 export const GET = async (req: NextRequest) => {
   await connectDb();
