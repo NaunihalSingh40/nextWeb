@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import styled from "styled-components";
-import Layout from "views/Layout";
 import { useDispatch } from "react-redux";
 import { addToCart } from "slices/cartSlice";
 import { useGetProductQuery } from "services/NextWeb/GetProductsApi"; // <-- update this path if needed
@@ -28,68 +27,56 @@ const Dashboard = () => {
   const { data: products, isLoading, isError } = useGetProductQuery(null);
   const [addCartItem] = useAddCartItemMutation();
 
-  if (isLoading)
-    return (
-      <Layout>
-        <p>Loading products...</p>
-      </Layout>
-    );
-  if (isError)
-    return (
-      <Layout>
-        <p>Failed to load products.</p>
-      </Layout>
-    );
+  if (isLoading) return <p>Loading products...</p>;
+  if (isError) return <p>Failed to load products.</p>;
 
   return (
-    <Layout>
-      <Grid>
-        {products?.map((item: Product) => (
-          <ProductWrapper key={item.id}>
-            <Content>
-              <Image
-                src={item.image}
-                alt={item.title}
-                width={200}
-                height={200}
-                style={{ borderRadius: "10px" }}
-              />
-              <ProductTitle>{item.title}</ProductTitle>
-              <Rating>
-                ⭐ {item.rating?.rate ?? "N/A"} ({item.rating?.count ?? 0})
-              </Rating>
-              <Price>${item.price}</Price>
-              <ButtonGroup>
-                <BuyNowBtn onClick={() => alert(`Buying ${item.title}`)}>
-                  Buy Now
-                </BuyNowBtn>
-                <AddToCartBtn
-                  onClick={() => {
-                    dispatch(
-                      addToCart({
-                        ...item,
-                        id: item.id.toString(),
-                        name: item.title,
-                      })
-                    );
-                    addCartItem({
-                      userId: getUserFromToken()?.id,
-                      productId: item.id.toString(),
+    <Grid>
+      {products?.map((item: Product) => (
+        <ProductWrapper key={item.id}>
+          <Content>
+            <Image
+              src={item.image}
+              alt={item.title}
+              width={200}
+              height={200}
+              style={{ borderRadius: "10px" }}
+            />
+            <ProductTitle>{item.title}</ProductTitle>
+            <Rating>
+              ⭐ {item.rating?.rate ?? "N/A"} ({item.rating?.count ?? 0})
+            </Rating>
+            <Price>${item.price}</Price>
+            <ButtonGroup>
+              <BuyNowBtn onClick={() => alert(`Buying ${item.title}`)}>
+                Buy Now
+              </BuyNowBtn>
+              <AddToCartBtn
+                onClick={() => {
+                  dispatch(
+                    addToCart({
+                      ...item,
+                      id: item.id.toString(),
                       name: item.title,
-                      price: item.price,
-                      quantity: 1,
-                      image: item.image,
-                    });
-                  }}
-                >
-                  Add to Cart
-                </AddToCartBtn>
-              </ButtonGroup>
-            </Content>
-          </ProductWrapper>
-        ))}
-      </Grid>
-    </Layout>
+                    })
+                  );
+                  addCartItem({
+                    userId: getUserFromToken()?.id,
+                    productId: item.id.toString(),
+                    name: item.title,
+                    price: item.price,
+                    quantity: 1,
+                    image: item.image,
+                  });
+                }}
+              >
+                Add to Cart
+              </AddToCartBtn>
+            </ButtonGroup>
+          </Content>
+        </ProductWrapper>
+      ))}
+    </Grid>
   );
 };
 

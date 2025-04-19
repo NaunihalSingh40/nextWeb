@@ -4,7 +4,7 @@ import { CartItem } from "models/cart";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-const getUserIdFromToken = (req: NextRequest) => {
+export const getUserIdFromToken = (req: NextRequest) => {
   const authHeader = req.headers.get("authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
 
@@ -50,12 +50,17 @@ export const POST = async (req: NextRequest) => {
     });
 
     if (existingItem) {
+      if (existingItem.quantity >= 5) {
+        return new NextResponse("Maximum quantity reached", { status: 400 });
+      }
       existingItem.quantity += body.quantity || 1;
+      if (existingItem.quantity > 5) existingItem.quantity = 5;
       await existingItem.save();
       return NextResponse.json(existingItem, { status: 200 });
     } else {
       const newItem = await CartItem.create({
         ...body,
+        quantity: Math.min(body.quantity || 1, 5),
         userId,
       });
       return NextResponse.json(newItem, { status: 201 });
