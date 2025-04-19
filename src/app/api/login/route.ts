@@ -62,6 +62,7 @@ export const POST = async (req: Request): Promise<Response> => {
 
     user.accessToken = accessToken;
     user.refreshToken = refreshToken;
+
     await user.save();
 
     return new NextResponse(

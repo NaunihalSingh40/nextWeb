@@ -31,7 +31,8 @@ const LoginPage: React.FC = () => {
     console.log(response);
 
     if (response.data.status == 200) {
-      console.log("hereee");
+      localStorage.setItem("accessToken", response?.data?.accessToken);
+      localStorage.setItem("refreshToken", response?.data?.refreshToken);
       router.push("/dashboard");
       reset();
     }
