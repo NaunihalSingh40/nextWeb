@@ -1,7 +1,7 @@
 import { connectDb } from "helper/dB";
 import { CartItem } from "models/cart";
 import { NextRequest, NextResponse } from "next/server";
-import { getUserIdFromToken } from "../route";
+import { getUserIdFromToken } from "helper";
 
 export const PUT = async (req: NextRequest) => {
   await connectDb();
@@ -40,8 +40,8 @@ export const PUT = async (req: NextRequest) => {
 };
 
 export const DELETE = async (
-  req: NextRequest,
-  { params }: { params: { productId: string } }
+  req: NextRequest
+  // { params }: { params: { productId: string } }
 ) => {
   await connectDb();
   const userId = getUserIdFromToken(req);
@@ -49,8 +49,10 @@ export const DELETE = async (
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
-
-  const { productId } = params;
+  const url = new URL(req.url);
+  const pathnameParts = url.pathname.split("/");
+  const productId = pathnameParts[pathnameParts.length - 1];
+  // const { productId } = params;
 
   if (!productId) {
     return new NextResponse("Missing productId", { status: 400 });
