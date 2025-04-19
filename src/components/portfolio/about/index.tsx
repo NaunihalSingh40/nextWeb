@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { resumeData } from "app/data";
+import { resumeData } from "data";
 
 const Section = styled.div`
   padding: 4rem 2rem;
