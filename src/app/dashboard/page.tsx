@@ -6,6 +6,7 @@ import { addToCart } from "slices/cartSlice";
 import { useGetProductQuery } from "services/NextWeb/GetProductsApi"; // <-- update this path if needed
 import { useAddCartItemMutation } from "services/NextWeb/GetCartApi";
 import { getUserFromToken } from "helper";
+import { useRouter } from "next/navigation";
 
 interface Rating {
   rate: number;
@@ -24,6 +25,7 @@ interface Product {
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { data: products, isLoading, isError } = useGetProductQuery(null);
   const [addCartItem] = useAddCartItemMutation();
 
@@ -33,7 +35,10 @@ const Dashboard = () => {
   return (
     <Grid>
       {products?.map((item: Product) => (
-        <ProductWrapper key={item.id}>
+        <ProductWrapper
+          key={item.id}
+          onClick={() => router.push(`/product/${item.id}`)}
+        >
           <Content>
             <Image
               src={item.image}
