@@ -1,48 +1,57 @@
 "use client";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import React from "react";
+import { useGetSingleProductQuery } from "services/NextWeb/GetProductsApi";
 import styled from "styled-components";
 
-const page = () => {
+const ProductPage = () => {
+  const params = useParams();
+  const productID = params && params.productID ? String(params.productID) : "";
+  const { data: product } = useGetSingleProductQuery(productID);
+
   return (
     <>
-      <ProductWrapper>
-        <ImageContainer>
-          <Image
-            src="https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_.jpg"
-            alt="t-shirt"
-            width={430}
-            height={500}
-          />
-        </ImageContainer>
+      {product && (
+        <>
+          <ProductWrapper>
+            <ImageContainer>
+              <Image
+                src={product.image}
+                alt={product.title}
+                width={430}
+                height={500}
+              />
+            </ImageContainer>
 
-        <DescriptionContainer>
-          <Title>Mens Casual Slim Fit</Title>
-          <Subtitle>Printed Pure Cotton T-shirt</Subtitle>
-          <ItemContent>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-            nostrum vel, dicta ipsa corrupti facere totam, dolorum illum
-            consequuntur{" "}
-          </ItemContent>
-          <Rating> ⭐4.5 | 17 Ratings</Rating>
-          <Price>$49.00</Price>
+            <DescriptionContainer>
+              <Title>{product.title}</Title>
+              <Subtitle>{product.category}</Subtitle>
+              <ItemContent>{product.description}</ItemContent>
+              <Rating>
+                {" "}
+                ⭐{product.rating?.rate} | {product.rating?.count} Ratings
+              </Rating>
+              <Price>${product.price}</Price>
 
-          <ButtonContainer>
-            <AddToBag>🛒 ADD TO BAG</AddToBag>
-            <Wishlist>💗 WISHLIST</Wishlist>
-          </ButtonContainer>
-        </DescriptionContainer>
-      </ProductWrapper>
+              <ButtonContainer>
+                <AddToBag>🛒 ADD TO BAG</AddToBag>
+                <Wishlist>💗 WISHLIST</Wishlist>
+              </ButtonContainer>
+            </DescriptionContainer>
+          </ProductWrapper>
+        </>
+      )}
     </>
   );
 };
 
-export default page;
+export default ProductPage;
 
 const ProductWrapper = styled.div`
   color: black;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   justify-content: space-around;
   padding: 40px;
   background-color: #f7f9fc;
