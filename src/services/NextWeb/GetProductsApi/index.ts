@@ -5,11 +5,17 @@ export const getProductsApi = NextWebApi.injectEndpoints({
     getProduct: builder.query({
       query: () => ({
         url: "products",
-        method: "GET"
+        method: "GET",
+      }),
+    }),
+    getSingleProduct: builder.query({
+      query: (productId) => ({
+        url: `products/${productId}`,
+        method: "GET",
       }),
     }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetProductQuery } = getProductsApi;
+export const { useGetProductQuery, useGetSingleProductQuery } = getProductsApi;
