@@ -18,7 +18,7 @@ const page = () => {
 
         <DescriptionContainer>
           <Title>Mens Casual Slim Fit</Title>
-          <Subtitle>"Printed Pure Cotton T-shirt"</Subtitle>
+          <Subtitle>Printed Pure Cotton T-shirt</Subtitle>
           <ItemContent>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
             nostrum vel, dicta ipsa corrupti facere totam, dolorum illum
@@ -26,15 +26,7 @@ const page = () => {
           </ItemContent>
           <Rating> ⭐4.5 | 17 Ratings</Rating>
           <Price>$49.00</Price>
-          {/* <SizeLabel>Select Size</SizeLabel>
-             <SizeOptions>
-              <Option>S</Option>
-              <Option>M</Option>
-              <Option>L</Option>
-              <Option>XL</Option>
-              <Option>XXL</Option>
-            </SizeOptions>
-              */}
+
           <ButtonContainer>
             <AddToBag>🛒 ADD TO BAG</AddToBag>
             <Wishlist>💗 WISHLIST</Wishlist>
@@ -101,26 +93,6 @@ const Rating = styled.div`
   margin-bottom: 10px;
   font-size: 16px;
   color: golden;
-`;
-
-const SizeLabel = styled.div`
-  color: black;
-  font-size: 18px;
-  font-weight: 600;
-`;
-const Option = styled.div`
-  color: black;
-  border: 1px solid black;
-  padding: 10px;
-  border-radius: 20px;
-  margin: 10px;
-  cursor: pointer;
-`;
-
-const SizeOptions = styled.div`
-  color: black;
-  display: flex;
-  align-items: center;
 `;
 const ButtonContainer = styled.div`
   color: black;
