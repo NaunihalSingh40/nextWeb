@@ -30,3 +30,5 @@ export async function GET(
     );
   }
 }
+
+// const { data: product } = useGetSingleProductQuery("5"); sample usage
