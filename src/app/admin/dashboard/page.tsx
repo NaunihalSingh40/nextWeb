@@ -1,4 +1,3 @@
-// app/admin/dashboard/page.tsx
 "use client";
 
 import React from "react";
@@ -16,13 +15,17 @@ const AdminDashboard: React.FC = () => {
           <CardIcon>➕</CardIcon>
           <CardLabel>Register Admin/Vendor</CardLabel>
         </ActionCard>
-        <ActionCard onClick={() => router.push("/admin/vendors")}>
+        <ActionCard onClick={() => router.push("/admin/stakeholders/vendors")}>
           <CardIcon>👥</CardIcon>
           <CardLabel>Vendor List</CardLabel>
         </ActionCard>
-        <ActionCard onClick={() => router.push("/admin/customers")}>
+        <ActionCard onClick={() => router.push("/admin/stakeholders/customers")}>
           <CardIcon>🧑‍🤝‍🧑</CardIcon>
           <CardLabel>Customer List</CardLabel>
+        </ActionCard>
+        <ActionCard onClick={() => router.push("/admin/stakeholders/admins")}>
+          <CardIcon>🛡️</CardIcon>
+          <CardLabel>Admin List</CardLabel>
         </ActionCard>
       </ButtonGrid>
     </PageWrapper>
@@ -31,6 +34,7 @@ const AdminDashboard: React.FC = () => {
 
 export default AdminDashboard;
 
+// Styled components stay the same as you shared earlier:
 const PageWrapper = styled.div`
   min-height: 100vh;
   padding: 4rem;

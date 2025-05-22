@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false, // 👈 disables strict mode in development
   images: {
     remotePatterns: [
       {
