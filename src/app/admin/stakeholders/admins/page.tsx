@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { User } from "app/admin/stakeholders/vendors/page";
 
@@ -8,13 +8,30 @@ const AdminListPage: React.FC = () => {
   const [admins, setAdmins] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchAdmins = useCallback(() => {
+    setLoading(true);
     fetch("/api/user/admin")
       .then((res) => res.json())
       .then((data: User[]) => setAdmins(data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchAdmins();
+  }, [fetchAdmins]);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this admin?")) return;
+    try {
+      const res = await fetch(`/api/user/admin/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error(await res.text());
+      fetchAdmins(); // Refresh list
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete admin.");
+    }
+  };
 
   if (loading) return <Centered>Loading admins…</Centered>;
   if (admins.length === 0) return <Centered>No admins found.</Centered>;
@@ -30,6 +47,7 @@ const AdminListPage: React.FC = () => {
               <Th>Username</Th>
               <Th>Email</Th>
               <Th>Role</Th>
+              <Th>Actions</Th>
             </tr>
           </thead>
           <tbody>
@@ -39,6 +57,11 @@ const AdminListPage: React.FC = () => {
                 <Td>{admin.username}</Td>
                 <Td>{admin.email}</Td>
                 <Td>{admin.role}</Td>
+                <Td>
+                  <DeleteButton onClick={() => handleDelete(admin._id)}>
+                    Delete
+                  </DeleteButton>
+                </Td>
               </tr>
             ))}
           </tbody>
@@ -50,7 +73,7 @@ const AdminListPage: React.FC = () => {
 
 export default AdminListPage;
 
-// -- Same styled-components as below --
+// --- Styled Components ---
 const PageWrapper = styled.div`
   padding: 2rem;
   background: #f5f7fa;
@@ -89,6 +112,19 @@ const Td = styled.td`
   border-bottom: 1px solid #eee;
   font-size: 0.875rem;
   color: #333;
+`;
+
+const DeleteButton = styled.button`
+  background: #e53e3e;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  &:hover {
+    background: #c53030;
+  }
 `;
 
 const Centered = styled.div`
