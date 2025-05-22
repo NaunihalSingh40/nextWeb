@@ -4,6 +4,7 @@ import React from "react";
 import styled from "styled-components";
 import { useForm, Controller } from "react-hook-form";
 import { usePostSiginMutation } from "services/NextWeb/SignupApi";
+import { useRouter } from "next/navigation";
 
 type FieldType = {
   username?: string;
@@ -23,11 +24,11 @@ const SignupPage: React.FC = () => {
   } = useForm<FieldType>({
     defaultValues: { role: "customer" },
   });
+  const router = useRouter();
 
   const [postSignin] = usePostSiginMutation();
 
   const onSubmit = async (data: FieldType) => {
-    console.log("Form submitted successfully with:", data);
     // Add logic here to handle user registration, e.g., API call
     // Redirect based on the selected role
     const payLoad = {
@@ -40,14 +41,14 @@ const SignupPage: React.FC = () => {
     const response = await postSignin(payLoad);
     if (response) {
       reset();
-    }
-    console.log("response", response);
-    if (data.role === "admin") {
-      console.log("Redirecting to admin dashboard...");
-    } else if (data.role === "seller") {
-      console.log("Redirecting to seller dashboard...");
-    } else {
-      console.log("Redirecting to customer dashboard...");
+      alert("User registered successfully");
+      if (data.role === "admin") {
+        router.push("/admin/dashboard");
+      } else if (data.role === "seller") {
+        router.push("/vendor/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
     }
   };
 
