@@ -26,9 +26,7 @@ const LoginPage: React.FC = () => {
   const [postLogin] = usePostLoginMutation();
 
   const onSubmit = async (data: FieldType) => {
-    console.log("Success:", data);
     const response = await postLogin(data);
-    console.log(response);
 
     if (response.data.status == 200) {
       localStorage.setItem("accessToken", response?.data?.accessToken);

@@ -27,6 +27,10 @@ const AdminDashboard: React.FC = () => {
           <CardIcon>🛡️</CardIcon>
           <CardLabel>Admin List</CardLabel>
         </ActionCard>
+        <ActionCard onClick={() => router.push("/admin/product")}>
+          <CardIcon>📦</CardIcon>
+          <CardLabel>All Products</CardLabel>
+        </ActionCard>
       </ButtonGrid>
     </PageWrapper>
   );
