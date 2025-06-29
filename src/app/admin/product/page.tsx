@@ -1,12 +1,9 @@
 "use client";
 import Image from "next/image";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { addToCart } from "slices/cartSlice";
 import { useGetProductQuery } from "services/NextWeb/GetProductsApi"; // <-- update this path if needed
-import { useAddCartItemMutation } from "services/NextWeb/GetCartApi";
-import { getUserFromToken } from "helper";
 import { useRouter } from "next/navigation";
+import { useDeleteProductMutation } from "services/NextWeb/DeleteProductApi";
 
 interface Rating {
   rate: number;
@@ -14,7 +11,8 @@ interface Rating {
 }
 
 interface Product {
-  id: number;
+  _id: string;
+  id: string;
   title: string;
   price: number;
   description: string;
@@ -24,65 +22,53 @@ interface Product {
 }
 
 const Dashboard = () => {
-  const dispatch = useDispatch();
   const router = useRouter();
-  const { data: products, isLoading, isError } = useGetProductQuery(null);
-  const [addCartItem] = useAddCartItemMutation();
+  const {
+    data: products,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetProductQuery(null);
+  const [deleteProduct] = useDeleteProductMutation();
 
   if (isLoading) return <p>Loading products...</p>;
   if (isError) return <p>Failed to load products.</p>;
 
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteProduct(id);
+      refetch();
+    } catch (error) {
+      console.error("Error deleting item", error);
+    }
+  };
+
   return (
     <Grid>
       {products?.map((item: Product) => (
-        <ProductWrapper
-          key={item.id}
-          onClick={() => router.push(`/product/${item.id}`)}
-        >
+        <ProductWrapper key={item?.id}>
           <Content>
             <Image
-              src={item.image}
-              alt={item.title}
+              src={item?.image}
+              alt={item?.title}
               width={200}
               height={200}
               style={{ borderRadius: "10px" }}
+              onClick={() => router.push(`/product/${item.id}`)}
             />
-            <ProductTitle>{item.title}</ProductTitle>
+            <ProductTitle>{item?.title}</ProductTitle>
             <Rating>
-              ⭐ {item.rating?.rate ?? "N/A"} ({item.rating?.count ?? 0})
+              ⭐ {item?.rating?.rate ?? "N/A"} ({item.rating?.count ?? 0})
             </Rating>
             <Price>${item.price}</Price>
             <ButtonGroup>
-              <BuyNowBtn
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                  e.stopPropagation();
-                  alert(`Buying ${item.title}`);
+              <DeleteButton
+                onClick={() => {
+                  handleDelete(item?._id);
                 }}
               >
-                Buy Now
-              </BuyNowBtn>
-              <AddToCartBtn
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                  e.stopPropagation();
-                  dispatch(
-                    addToCart({
-                      ...item,
-                      id: item.id.toString(),
-                      name: item.title,
-                    })
-                  );
-                  addCartItem({
-                    userId: getUserFromToken()?.id,
-                    productId: item.id.toString(),
-                    name: item.title,
-                    price: item.price,
-                    quantity: 1,
-                    image: item.image,
-                  });
-                }}
-              >
-                Add to Cart
-              </AddToCartBtn>
+                Delete
+              </DeleteButton>
             </ButtonGroup>
           </Content>
         </ProductWrapper>
@@ -155,33 +141,17 @@ const ButtonGroup = styled.div`
   flex-wrap: wrap;
 `;
 
-const BuyNowBtn = styled.button`
-  background-color: #0070f3;
+const DeleteButton = styled.button`
+  background: #e53e3e;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
   border-radius: 6px;
-  font-size: 0.9rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-
+  font-size: 0.8rem;
   &:hover {
-    background-color: #005bb5;
-  }
-`;
-
-const AddToCartBtn = styled.button`
-  background-color: #f5f5f5;
-  color: #333;
-  border: 1px solid #ddd;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: #e0e0e0;
+    background: #c53030;
   }
 `;
 
@@ -190,4 +160,5 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  cursor: pointer;
 `;

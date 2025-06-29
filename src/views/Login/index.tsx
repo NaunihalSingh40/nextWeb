@@ -9,6 +9,21 @@ type FieldType = {
   password?: string;
 };
 
+export interface AuthResponse {
+  data: {
+    status: number;
+    message: string;
+    accessToken: string;
+    refreshToken: string;
+    user: {
+      id: string;
+      username: string;
+      email: string;
+      role: "customer" | "seller" | "admin";
+    };
+  };
+}
+
 const LoginPage: React.FC = () => {
   const router = useRouter();
   const {
@@ -26,15 +41,21 @@ const LoginPage: React.FC = () => {
   const [postLogin] = usePostLoginMutation();
 
   const onSubmit = async (data: FieldType) => {
-    console.log("Success:", data);
     const response = await postLogin(data);
-    console.log(response);
 
-    if (response.data.status == 200) {
+    if ("data" in response && response?.data?.status === 200) {
       localStorage.setItem("accessToken", response?.data?.accessToken);
       localStorage.setItem("refreshToken", response?.data?.refreshToken);
-      router.push("/dashboard");
+      if (response?.data?.user?.role === "admin") {
+        router.push("/admin/dashboard");
+      } else if (response?.data?.user?.role === "seller") {
+        router.push("/seller/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
       reset();
+    } else if ("error" in response) {
+      console.error("Login failed:", response.error);
     }
   };
 
