@@ -53,11 +53,17 @@ const Dashboard = () => {
             </Rating>
             <Price>${item.price}</Price>
             <ButtonGroup>
-              <BuyNowBtn onClick={() => alert(`Buying ${item.title}`)}>
+              <BuyNowBtn
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
+                  alert(`Buying ${item.title}`);
+                }}
+              >
                 Buy Now
               </BuyNowBtn>
               <AddToCartBtn
-                onClick={() => {
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
                   dispatch(
                     addToCart({
                       ...item,
